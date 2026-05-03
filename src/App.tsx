@@ -1,0 +1,60 @@
+import { useCallback, useState } from 'react';
+import { Header } from './components/layout/Header';
+import { Footer } from './components/layout/Footer';
+import { SingleUrlInput } from './components/input/SingleUrlInput';
+import { LogoUpload } from './components/config/LogoUpload';
+import { QrPreview } from './components/preview/QrPreview';
+
+export function App() {
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewLabel, setPreviewLabel] = useState<string | undefined>();
+
+  const handlePreviewChange = useCallback(
+    (url: string, label: string | undefined) => {
+      setPreviewUrl(url);
+      setPreviewLabel(label);
+    },
+    [],
+  );
+
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-10">
+        <header className="flex flex-col gap-2">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            Generate QR codes from URLs
+          </h1>
+          <p className="max-w-prose text-[var(--color-text-muted)]">
+            Drop in a list of URLs (or upload a CSV), get back a print-ready PDF
+            with one QR per page, plus per-QR PNG/SVG downloads and bulk ZIP.
+            Fully client-side — your URLs never leave your browser.
+          </p>
+        </header>
+
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="flex flex-col gap-5 rounded-lg border border-[var(--color-border)] bg-[var(--color-elevated)] p-5">
+            <h2 className="text-sm font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+              Input
+            </h2>
+            <SingleUrlInput onPreviewChange={handlePreviewChange} />
+            <hr className="border-[var(--color-border)]" />
+            <LogoUpload />
+          </div>
+
+          <div className="flex flex-col gap-5 rounded-lg border border-[var(--color-border)] bg-[var(--color-elevated)] p-5">
+            <h2 className="text-sm font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+              Preview
+            </h2>
+            <QrPreview url={previewUrl} label={previewLabel} />
+          </div>
+        </section>
+
+        <p className="text-center text-xs text-[var(--color-text-muted)]">
+          Batch input, PDF export, and bulk ZIP downloads land in Phases 2–4.
+        </p>
+      </main>
+      <Footer />
+    </div>
+  );
+}
