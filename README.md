@@ -10,16 +10,17 @@ Most online QR code generators offer free creation but charge a monthly fee to "
 
 ## Features
 
-- Single URL, multi-line paste, or CSV upload
-- Editable batch table — reorder, edit labels, delete rows
-- Print-ready PDF: one QR per page, with optional headers, footers, labels, and page numbers
-- Letter (8.5×11") and A4 page sizes
-- Per-QR PNG and SVG downloads
-- Bulk ZIP export for entire batches
-- Optional logo embedding in the center of each QR
-- Light + dark mode
-- Save/load batches as JSON files
-- "Test all links" — open every URL in a tab to verify before printing
+- **Four ways to add URLs** — single field, multi-line paste, CSV drop, or load a saved batch JSON
+- **Editable batch table** — inline edit URL/label, up/down reorder, bulk-select with delete, ⚠ icon on suspect URLs
+- **Print-ready PDF** — one QR per page, optional header/footer (text + PNG/JPEG image), label above the QR, URL below, page numbers, Letter or A4
+- **Live PDF preview** that updates as you change config
+- **Per-QR PNG and SVG downloads** with optional centered logo (auto-bumps error correction to High when a logo is present, so the QR still scans cleanly)
+- **Bulk ZIP exports** — one ZIP of PNGs or SVGs per batch, with collision-safe filenames derived from the row's label or URL
+- **Save / load batches as JSON** so you can iterate later
+- **Test all links** opens every URL in a new tab (with a confirm prompt over 20)
+- **500-row warning** before things get slow
+- **Light / dark / system theme** with no flash on load
+- **CSP-enforced privacy** — `connect-src 'self'` blocks any outbound request, so URLs and logos can't leave the browser even by mistake
 
 ## Stack
 
@@ -59,7 +60,16 @@ npx wrangler deploy
 
 ## Privacy
 
-URLs you enter never leave your browser. The site makes zero network requests after the initial page load. The Content-Security-Policy header (`connect-src 'self'`) enforces this architecturally — not as a policy promise.
+URLs you enter never leave your browser. The site makes zero network requests after the initial page load. The Content-Security-Policy header (`connect-src 'self'`) enforces this architecturally — not as a policy promise. To verify yourself: open DevTools → Network panel, then drop in a CSV. You'll see no requests fire.
+
+Other security headers attached by the Cloudflare Worker:
+- `Strict-Transport-Security: max-age=31536000; includeSubDomains`
+- `X-Frame-Options: DENY` (no embedding)
+- `X-Content-Type-Options: nosniff`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `Permissions-Policy` denies camera, microphone, geolocation, etc.
+
+`npm audit --omit=dev` reports zero vulnerabilities in production dependencies.
 
 ## Planning Documentation
 
