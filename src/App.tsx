@@ -2,25 +2,40 @@ import { useCallback, useState } from 'react';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { SingleUrlInput } from './components/input/SingleUrlInput';
+import { MultiLinePaste } from './components/input/MultiLinePaste';
+import { CsvDropZone } from './components/input/CsvDropZone';
+import { LoadBatchButton } from './components/input/LoadBatchButton';
 import { LogoUpload } from './components/config/LogoUpload';
 import { QrPreview } from './components/preview/QrPreview';
+import { BatchTable } from './components/batch/BatchTable';
+import { SaveBatchButton } from './components/output/SaveBatchButton';
+import { TestLinksButton } from './components/output/TestLinksButton';
+import { useBatchStore } from './store/batch';
+
+function Divider() {
+  return <hr className="border-[var(--color-border)]" />;
+}
 
 export function App() {
-  const [previewUrl, setPreviewUrl] = useState('');
-  const [previewLabel, setPreviewLabel] = useState<string | undefined>();
+  const rows = useBatchStore((s) => s.rows);
+  const [scratchUrl, setScratchUrl] = useState('');
+  const [scratchLabel, setScratchLabel] = useState<string | undefined>();
 
   const handlePreviewChange = useCallback(
     (url: string, label: string | undefined) => {
-      setPreviewUrl(url);
-      setPreviewLabel(label);
+      setScratchUrl(url);
+      setScratchLabel(label);
     },
     [],
   );
 
+  const previewUrl = scratchUrl || rows[0]?.url || '';
+  const previewLabel = scratchUrl ? scratchLabel : rows[0]?.label;
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-10">
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8">
         <header className="flex flex-col gap-2">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Generate QR codes from URLs
@@ -35,10 +50,16 @@ export function App() {
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="flex flex-col gap-5 rounded-lg border border-[var(--color-border)] bg-[var(--color-elevated)] p-5">
             <h2 className="text-sm font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
-              Input
+              Add URLs
             </h2>
             <SingleUrlInput onPreviewChange={handlePreviewChange} />
-            <hr className="border-[var(--color-border)]" />
+            <Divider />
+            <MultiLinePaste />
+            <Divider />
+            <CsvDropZone />
+            <Divider />
+            <LoadBatchButton />
+            <Divider />
             <LogoUpload />
           </div>
 
@@ -47,11 +68,32 @@ export function App() {
               Preview
             </h2>
             <QrPreview url={previewUrl} label={previewLabel} />
+            {!scratchUrl && rows.length > 0 && (
+              <p className="text-center text-xs text-[var(--color-text-muted)]">
+                Showing row #1. Type a URL above to preview a different one.
+              </p>
+            )}
           </div>
         </section>
 
+        <BatchTable />
+
+        <section className="flex flex-wrap items-center gap-2">
+          <SaveBatchButton />
+          <TestLinksButton />
+          {rows.length === 0 && (
+            <a
+              href="/example-batch.csv"
+              download
+              className="rounded-md border border-dashed border-[var(--color-border)] bg-[var(--color-elevated)]/50 px-3 py-1.5 text-sm text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-text-primary)]"
+            >
+              Download example CSV
+            </a>
+          )}
+        </section>
+
         <p className="text-center text-xs text-[var(--color-text-muted)]">
-          Batch input, PDF export, and bulk ZIP downloads land in Phases 2–4.
+          PDF export and bulk ZIP downloads land in Phases 3–4.
         </p>
       </main>
       <Footer />
