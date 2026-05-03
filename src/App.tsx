@@ -7,9 +7,12 @@ import { CsvDropZone } from './components/input/CsvDropZone';
 import { LoadBatchButton } from './components/input/LoadBatchButton';
 import { LogoUpload } from './components/config/LogoUpload';
 import { QrPreview } from './components/preview/QrPreview';
+import { PdfPreview } from './components/preview/PdfPreview';
 import { BatchTable } from './components/batch/BatchTable';
+import { ConfigPanel } from './components/config/ConfigPanel';
 import { SaveBatchButton } from './components/output/SaveBatchButton';
 import { TestLinksButton } from './components/output/TestLinksButton';
+import { DownloadPdfButton } from './components/output/DownloadPdfButton';
 import { useBatchStore } from './store/batch';
 
 function Divider() {
@@ -78,7 +81,17 @@ export function App() {
 
         <BatchTable />
 
+        {rows.length > 0 && (
+          <section className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+            <ConfigPanel />
+            <div className="flex flex-col gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-elevated)] p-5">
+              <PdfPreview />
+            </div>
+          </section>
+        )}
+
         <section className="flex flex-wrap items-center gap-2">
+          <DownloadPdfButton />
           <SaveBatchButton />
           <TestLinksButton />
           {rows.length === 0 && (
@@ -93,7 +106,7 @@ export function App() {
         </section>
 
         <p className="text-center text-xs text-[var(--color-text-muted)]">
-          PDF export and bulk ZIP downloads land in Phases 3–4.
+          Bulk PNG/SVG ZIP downloads land in Phase 4.
         </p>
       </main>
       <Footer />
