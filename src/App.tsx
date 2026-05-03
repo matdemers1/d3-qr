@@ -9,10 +9,13 @@ import { LogoUpload } from './components/config/LogoUpload';
 import { QrPreview } from './components/preview/QrPreview';
 import { PdfPreview } from './components/preview/PdfPreview';
 import { BatchTable } from './components/batch/BatchTable';
+import { BatchSizeWarning } from './components/batch/BatchSizeWarning';
 import { ConfigPanel } from './components/config/ConfigPanel';
 import { SaveBatchButton } from './components/output/SaveBatchButton';
 import { TestLinksButton } from './components/output/TestLinksButton';
 import { DownloadPdfButton } from './components/output/DownloadPdfButton';
+import { DownloadPngZipButton } from './components/output/DownloadPngZipButton';
+import { DownloadSvgZipButton } from './components/output/DownloadSvgZipButton';
 import { useBatchStore } from './store/batch';
 
 function Divider() {
@@ -90,8 +93,12 @@ export function App() {
           </section>
         )}
 
+        <BatchSizeWarning />
+
         <section className="flex flex-wrap items-center gap-2">
           <DownloadPdfButton />
+          <DownloadPngZipButton />
+          <DownloadSvgZipButton />
           <SaveBatchButton />
           <TestLinksButton />
           {rows.length === 0 && (
@@ -104,10 +111,6 @@ export function App() {
             </a>
           )}
         </section>
-
-        <p className="text-center text-xs text-[var(--color-text-muted)]">
-          Bulk PNG/SVG ZIP downloads land in Phase 4.
-        </p>
       </main>
       <Footer />
     </div>
