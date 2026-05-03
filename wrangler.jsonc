@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "d3-qr",
+  "compatibility_date": "2026-05-01",
+  "main": "src/worker.ts",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Custom domain "qr.d3cloud.io" is configured in the Cloudflare dashboard
+  // after the first deploy, not via wrangler.jsonc.
+}

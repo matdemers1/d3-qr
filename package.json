@@ -1,0 +1,24 @@
+{
+  "name": "d3-qr",
+  "version": "0.0.1",
+  "description": "Static QR code generator — fully client-side React SPA. Bulk PDF + image export from URLs.",
+  "private": false,
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://qr.d3cloud.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/d3cloud/d3-qr"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
