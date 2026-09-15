@@ -20,7 +20,7 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "@d3cloud/ui": "https://github.com/matdemers1/d3-design-system/releases/download/v0.2.0-rc.3/d3cloud-ui-0.2.0-rc.3.tgz",
+    "@d3cloud/ui": "https://github.com/matdemers1/d3-design-system/releases/download/v1.0.0/d3cloud-ui-1.0.0.tgz",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
     "nanoid": "^5.0.9",
