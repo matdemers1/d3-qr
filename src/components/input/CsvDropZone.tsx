@@ -1,6 +1,8 @@
 import { useRef, useState, type DragEvent } from 'react';
 import { useBatchStore } from '../../store/batch';
 import { parseCsvFile } from '../../lib/csv';
+import { Alert } from '@d3cloud/ui';
+import { DropZone } from '../ui/DropZone';
 
 function isCsvFile(file: File): boolean {
   if (file.type === 'text/csv' || file.type === 'application/vnd.ms-excel') {
@@ -24,7 +26,9 @@ export function CsvDropZone() {
     setStatus(null);
     if (!file) return;
     if (!isCsvFile(file)) {
-      setError('That file does not look like a CSV. Drop a .csv file or use the picker.');
+      setError(
+        'That file does not look like a CSV. Drop a .csv file or use the picker.',
+      );
       return;
     }
     try {
@@ -63,33 +67,22 @@ export function CsvDropZone() {
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">Drop a CSV</label>
-      <div
+      <p id="d3qr-csv-heading" className="text-sm font-medium">
+        Drop a CSV
+      </p>
+      <DropZone
+        active={isDragOver}
+        labelledBy="d3qr-csv-heading"
+        onActivate={onClickPick}
         onDrop={onDrop}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
-        onClick={onClickPick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onClickPick();
-          }
-        }}
-        className={`cursor-pointer rounded-md border-2 border-dashed p-4 text-center text-sm transition ${
-          isDragOver
-            ? 'border-[var(--color-accent)] bg-[var(--color-elevated)]'
-            : 'border-[var(--color-border)] bg-[var(--color-elevated)]/50 hover:border-[var(--color-accent)]'
-        }`}
       >
-        <p className="text-[var(--color-text-muted)]">
-          Drop a .csv here, or click to choose
-        </p>
-        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+        <p className="text-fg-muted">Drop a .csv here, or click to choose</p>
+        <p className="mt-1 text-xs text-fg-muted">
           First column = URL, second column (optional) = label
         </p>
-      </div>
+      </DropZone>
       <input
         ref={inputRef}
         type="file"
@@ -97,15 +90,21 @@ export function CsvDropZone() {
         className="hidden"
         onChange={(e) => void handleFile(e.target.files?.[0])}
       />
-      {status && (
-        <p className="text-xs text-[var(--color-success)]">
-          Imported {status.rows} URL{status.rows === 1 ? '' : 's'}
-          {status.warnings.length > 0
-            ? ` (${status.warnings.length} warning${status.warnings.length === 1 ? '' : 's'})`
-            : ''}
-        </p>
+      <div aria-live="polite">
+        {status && (
+          <p className="text-xs text-success">
+            Imported {status.rows} URL{status.rows === 1 ? '' : 's'}
+            {status.warnings.length > 0
+              ? ` (${status.warnings.length} warning${status.warnings.length === 1 ? '' : 's'})`
+              : ''}
+          </p>
+        )}
+      </div>
+      {error && (
+        <Alert tone="danger" dynamic>
+          {error}
+        </Alert>
       )}
-      {error && <p className="text-xs text-[var(--color-error)]">{error}</p>}
     </div>
   );
 }

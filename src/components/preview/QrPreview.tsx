@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
 import { useBatchStore } from '../../store/batch';
 import { generateQrPng, generateQrSvg, optionsFromConfig } from '../../lib/qr';
+import { Alert, Button, Spinner } from '@d3cloud/ui';
 
 interface Props {
   url: string;
@@ -45,8 +46,7 @@ export function QrPreview({ url, label }: Props) {
           setPreview({
             url,
             dataUrl: '',
-            error:
-              err instanceof Error ? err.message : 'QR generation failed',
+            error: err instanceof Error ? err.message : 'QR generation failed',
           });
         }
       });
@@ -92,50 +92,44 @@ export function QrPreview({ url, label }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex aspect-square w-full max-w-[360px] items-center justify-center self-center rounded-md border border-[var(--color-border)] bg-white p-4">
+      {/* White in both themes: this is the code as it will be printed. A light
+          theme island, so the spinner and the empty-state text inside take the
+          light palette instead of dark-theme greys on a white ground. */}
+      <div
+        data-theme="light"
+        className="flex aspect-square w-full max-w-[360px] items-center justify-center self-center rounded-md border border-border bg-white p-4"
+      >
         {pngDataUrl ? (
           <img
             src={pngDataUrl}
             alt={`QR code for ${url}`}
             className="h-full w-full object-contain"
           />
+        ) : generating ? (
+          <Spinner label="Generating the QR code" />
         ) : (
-          <div className="text-center text-sm text-[var(--color-text-muted)]">
-            {url
-              ? generating
-                ? 'Generating…'
-                : 'Preview unavailable'
-              : 'Type a URL to see a preview'}
-          </div>
+          <p className="text-center text-sm text-fg-muted">
+            {url ? 'Preview unavailable' : 'Type a URL to see a preview'}
+          </p>
         )}
       </div>
       {showLogoHint && (
-        <p className="text-center text-xs text-[var(--color-text-muted)]">
+        <p className="text-center text-xs text-fg-muted">
           Logo detected — using high error correction (H)
         </p>
       )}
       {(previewError || downloadError) && (
-        <p className="text-center text-xs text-[var(--color-error)]">
+        <Alert tone="danger" dynamic>
           {previewError ?? downloadError}
-        </p>
+        </Alert>
       )}
       <div className="flex justify-center gap-2">
-        <button
-          type="button"
-          onClick={() => void downloadPng()}
-          disabled={!url}
-          className="rounded-md border border-[var(--color-border)] bg-[var(--color-elevated)] px-3 py-1.5 text-sm hover:bg-[var(--color-canvas)] disabled:cursor-not-allowed disabled:opacity-50"
-        >
+        <Button onClick={() => void downloadPng()} disabled={!url}>
           Download PNG
-        </button>
-        <button
-          type="button"
-          onClick={() => void downloadSvg()}
-          disabled={!url}
-          className="rounded-md border border-[var(--color-border)] bg-[var(--color-elevated)] px-3 py-1.5 text-sm hover:bg-[var(--color-canvas)] disabled:cursor-not-allowed disabled:opacity-50"
-        >
+        </Button>
+        <Button onClick={() => void downloadSvg()} disabled={!url}>
           Download SVG
-        </button>
+        </Button>
       </div>
     </div>
   );

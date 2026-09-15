@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useBatchStore } from '../../store/batch';
 import { renderPagePreview } from '../../lib/pdf-preview';
 import { useDebounce } from '../../hooks/useDebounce';
+import { Alert } from '@d3cloud/ui';
 
 export function PdfPreview() {
   const rows = useBatchStore((s) => s.rows);
@@ -30,7 +31,7 @@ export function PdfPreview() {
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-sm font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+      <h2 className="text-sm font-semibold tracking-wide text-fg-muted uppercase">
         PDF preview
       </h2>
       <div className="flex flex-col items-center gap-2">
@@ -40,20 +41,23 @@ export function PdfPreview() {
               ref={canvasRef}
               role="img"
               aria-label={`PDF preview of row 1: ${firstRow.url}`}
-              className="rounded-md shadow-sm ring-1 ring-[var(--color-border)]"
+              className="rounded-md ring-1 ring-border"
               style={{ maxWidth: '100%' }}
             />
-            <p className="text-center text-xs text-[var(--color-text-muted)]">
-              First page of {rows.length} — preview is a fast approximation; final PDF uses Helvetica.
+            <p className="text-center text-xs text-fg-muted">
+              First page of {rows.length} — preview is a fast approximation;
+              final PDF uses Helvetica.
             </p>
           </>
         ) : (
-          <div className="flex aspect-[8.5/11] w-full max-w-[240px] items-center justify-center rounded-md border border-dashed border-[var(--color-border)] bg-[var(--color-canvas)] p-4 text-center text-xs text-[var(--color-text-muted)]">
+          <div className="flex aspect-[8.5/11] w-full max-w-[240px] items-center justify-center rounded-md border border-dashed border-border bg-bg p-4 text-center text-xs text-fg-muted">
             Add a URL to see the PDF page preview
           </div>
         )}
         {error && (
-          <p className="text-xs text-[var(--color-error)]">{error}</p>
+          <Alert tone="danger" dynamic>
+            {error}
+          </Alert>
         )}
       </div>
     </div>

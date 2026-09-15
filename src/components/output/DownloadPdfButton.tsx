@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
+import { Alert, Button } from '@d3cloud/ui';
 import { useBatchStore } from '../../store/batch';
 import { generateQrPng, optionsFromConfig } from '../../lib/qr';
 import { pdfFilename } from '../../lib/pdf-layout';
@@ -47,16 +48,20 @@ export function DownloadPdfButton() {
     : `Download PDF (${rows.length} page${rows.length === 1 ? '' : 's'})`;
 
   return (
-    <div className="flex flex-col gap-1">
-      <button
-        type="button"
+    <div className="flex flex-col gap-2">
+      <Button
+        variant="primary"
         onClick={() => void handleDownload()}
         disabled={rows.length === 0 || generating}
-        className="rounded-md bg-[var(--color-accent)] px-3 py-1.5 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        loading={generating}
       >
         {label}
-      </button>
-      {error && <p className="text-xs text-[var(--color-error)]">{error}</p>}
+      </Button>
+      {error && (
+        <Alert tone="danger" dynamic>
+          {error}
+        </Alert>
+      )}
     </div>
   );
 }

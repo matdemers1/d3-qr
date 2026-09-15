@@ -36,9 +36,9 @@ export async function renderPagePreview(
   if (!ctx) return;
   ctx.imageSmoothingEnabled = true;
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = '#ffffff'; // d3-allow: the printed page, which is paper-coloured in either theme
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = '#e2e8f0';
+  ctx.strokeStyle = '#e2e8f0'; // d3-allow: the printed page, which is paper-coloured in either theme
   ctx.lineWidth = 1;
   ctx.strokeRect(0.5, 0.5, canvas.width - 1, canvas.height - 1);
 
@@ -53,7 +53,7 @@ export async function renderPagePreview(
   );
 
   if (row.label) {
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = '#000000'; // d3-allow: the printed page, which is paper-coloured in either theme
     ctx.font = `bold ${LAYOUT.labelSize * scale}px Helvetica, Arial, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
@@ -65,7 +65,7 @@ export async function renderPagePreview(
   }
 
   if (config.showUrlBelowQr) {
-    ctx.fillStyle = '#333333';
+    ctx.fillStyle = '#333333'; // d3-allow: the printed page, which is paper-coloured in either theme
     ctx.font = `${LAYOUT.urlSize * scale}px Helvetica, Arial, sans-serif`;
     ctx.textAlign = 'center';
     ctx.fillText(
@@ -76,7 +76,7 @@ export async function renderPagePreview(
   }
 
   if (config.header?.text) {
-    ctx.fillStyle = '#1a1a1a';
+    ctx.fillStyle = '#1a1a1a'; // d3-allow: the printed page, which is paper-coloured in either theme
     ctx.font = `${LAYOUT.headerTextSize * scale}px Helvetica, Arial, sans-serif`;
     ctx.textAlign = 'left';
     ctx.fillText(
@@ -104,7 +104,7 @@ export async function renderPagePreview(
   }
 
   if (config.footer?.text) {
-    ctx.fillStyle = '#666666';
+    ctx.fillStyle = '#666666'; // d3-allow: the printed page, which is paper-coloured in either theme
     ctx.font = `${LAYOUT.footerTextSize * scale}px Helvetica, Arial, sans-serif`;
     ctx.textAlign = 'left';
     ctx.fillText(
@@ -122,7 +122,10 @@ export async function renderPagePreview(
       ctx.drawImage(
         img,
         slots.footer.rightEdge * scale - imgW,
-        (slots.height - slots.footer.imageBottom - LAYOUT.footerImageMaxHeight) * scale,
+        (slots.height -
+          slots.footer.imageBottom -
+          LAYOUT.footerImageMaxHeight) *
+          scale,
         imgW,
         imgH,
       );
@@ -132,7 +135,7 @@ export async function renderPagePreview(
   }
 
   if (config.showPageNumbers) {
-    ctx.fillStyle = '#888888';
+    ctx.fillStyle = '#888888'; // d3-allow: the printed page, which is paper-coloured in either theme
     ctx.font = `${LAYOUT.pageNumberSize * scale}px Helvetica, Arial, sans-serif`;
     ctx.textAlign = 'right';
     ctx.fillText(

@@ -17,9 +17,10 @@ import { DownloadPdfButton } from './components/output/DownloadPdfButton';
 import { DownloadPngZipButton } from './components/output/DownloadPngZipButton';
 import { DownloadSvgZipButton } from './components/output/DownloadSvgZipButton';
 import { useBatchStore } from './store/batch';
+import { Link } from '@d3cloud/ui';
 
 function Divider() {
-  return <hr className="border-[var(--color-border)]" />;
+  return <hr className="border-border" />;
 }
 
 export function App() {
@@ -46,7 +47,7 @@ export function App() {
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Generate QR codes from URLs
           </h1>
-          <p className="max-w-prose text-[var(--color-text-muted)]">
+          <p className="max-w-prose text-fg-muted">
             Drop in a list of URLs (or upload a CSV), get back a print-ready PDF
             with one QR per page, plus per-QR PNG/SVG downloads and bulk ZIP.
             Fully client-side — your URLs never leave your browser.
@@ -54,8 +55,8 @@ export function App() {
         </header>
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          <div className="flex flex-col gap-5 rounded-lg border border-[var(--color-border)] bg-[var(--color-elevated)] p-5">
-            <h2 className="text-sm font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+          <div className="flex flex-col gap-5 rounded-lg border border-border bg-surface p-5">
+            <h2 className="text-sm font-semibold tracking-wide text-fg-muted uppercase">
               Add URLs
             </h2>
             <SingleUrlInput onPreviewChange={handlePreviewChange} />
@@ -69,13 +70,13 @@ export function App() {
             <LogoUpload />
           </div>
 
-          <div className="flex flex-col gap-5 rounded-lg border border-[var(--color-border)] bg-[var(--color-elevated)] p-5">
-            <h2 className="text-sm font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+          <div className="flex flex-col gap-5 rounded-lg border border-border bg-surface p-5">
+            <h2 className="text-sm font-semibold tracking-wide text-fg-muted uppercase">
               Preview
             </h2>
             <QrPreview url={previewUrl} label={previewLabel} />
             {!scratchUrl && rows.length > 0 && (
-              <p className="text-center text-xs text-[var(--color-text-muted)]">
+              <p className="text-center text-xs text-fg-muted">
                 Showing row #1. Type a URL above to preview a different one.
               </p>
             )}
@@ -87,7 +88,7 @@ export function App() {
         {rows.length > 0 && (
           <section className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
             <ConfigPanel />
-            <div className="flex flex-col gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-elevated)] p-5">
+            <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-5">
               <PdfPreview />
             </div>
           </section>
@@ -102,13 +103,9 @@ export function App() {
           <SaveBatchButton />
           <TestLinksButton />
           {rows.length === 0 && (
-            <a
-              href="/example-batch.csv"
-              download
-              className="rounded-md border border-dashed border-[var(--color-border)] bg-[var(--color-elevated)]/50 px-3 py-1.5 text-sm text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-text-primary)]"
-            >
+            <Link href="/example-batch.csv" download>
               Download example CSV
-            </a>
+            </Link>
           )}
         </section>
       </main>

@@ -1,4 +1,5 @@
 import { saveAs } from 'file-saver';
+import { Button } from '@d3cloud/ui';
 import { useBatchStore } from '../../store/batch';
 import { batchFilename, serializeBatch } from '../../lib/batch';
 
@@ -15,13 +16,8 @@ export function SaveBatchButton() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleSave}
-      disabled={rowCount === 0}
-      className="rounded-md border border-[var(--color-border)] bg-[var(--color-elevated)] px-3 py-1.5 text-sm hover:bg-[var(--color-canvas)] disabled:cursor-not-allowed disabled:opacity-50"
-    >
+    <Button onClick={handleSave} disabled={rowCount === 0}>
       Save batch
-    </button>
+    </Button>
   );
 }

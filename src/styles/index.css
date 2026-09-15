@@ -1,46 +1,13 @@
-@import 'tailwindcss';
+/* D3 QR on @d3cloud/ui.
+ *
+ * The system's Tailwind entry replaces the palette, dark variant and focus
+ * ring this file used to define. Theme is `data-theme` on <html> (see
+ * public/theme-init.js and hooks/useTheme.ts), not a `.dark` class. */
+@import '@d3cloud/ui/theme.css';
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-:root {
-  --color-canvas: #ffffff;
-  --color-elevated: #f8fafc;
-  --color-text-primary: #0f172a;
-  --color-text-muted: #475569;
-  --color-accent: #3b82f6;
-  --color-border: #e2e8f0;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-
-  color-scheme: light;
-}
-
-.dark {
-  --color-canvas: #0a0a0f;
-  --color-elevated: #16213e;
-  --color-text-primary: #f1f5f9;
-  --color-text-muted: #94a3b8;
-  --color-accent: #60a5fa;
-  --color-border: #1e293b;
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-error: #f87171;
-
-  color-scheme: dark;
-}
-
-@theme inline {
-  --color-canvas: var(--color-canvas);
-  --color-elevated: var(--color-elevated);
-  --color-text-primary: var(--color-text-primary);
-  --color-text-muted: var(--color-text-muted);
-  --color-accent: var(--color-accent);
-  --color-border: var(--color-border);
-  --color-success: var(--color-success);
-  --color-warning: var(--color-warning);
-  --color-error: var(--color-error);
-}
+/* Tailwind v4 finds content relative to the CSS file that imports it, which is
+   now inside node_modules — so point it back at this app. */
+@source '../';
 
 @layer base {
   html,
@@ -50,23 +17,9 @@
   }
 
   body {
-    background-color: var(--color-canvas);
-    color: var(--color-text-primary);
-    font-family:
-      ui-sans-serif,
-      system-ui,
-      -apple-system,
-      'Segoe UI',
-      Roboto,
-      'Helvetica Neue',
-      Arial,
-      sans-serif;
+    background: var(--color-bg);
+    color: var(--color-fg);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-
-  *:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
   }
 }

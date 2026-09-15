@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useBatchStore } from '../../store/batch';
 import { BatchFormatError, deserializeBatch } from '../../lib/batch';
+import { Alert, Button } from '@d3cloud/ui';
 
 export function LoadBatchButton() {
   const loadBatch = useBatchStore((s) => s.loadBatch);
@@ -30,14 +31,8 @@ export function LoadBatchButton() {
   }
 
   return (
-    <div className="flex flex-col gap-1">
-      <button
-        type="button"
-        onClick={onPick}
-        className="rounded-md border border-[var(--color-border)] bg-[var(--color-elevated)] px-3 py-1.5 text-sm hover:bg-[var(--color-canvas)]"
-      >
-        Load batch (JSON)
-      </button>
+    <div className="flex flex-col gap-2">
+      <Button onClick={onPick}>Load batch (JSON)</Button>
       <input
         ref={inputRef}
         type="file"
@@ -45,7 +40,11 @@ export function LoadBatchButton() {
         className="hidden"
         onChange={(e) => void onFile(e.target.files?.[0])}
       />
-      {error && <p className="text-xs text-[var(--color-error)]">{error}</p>}
+      {error && (
+        <Alert tone="danger" dynamic>
+          {error}
+        </Alert>
+      )}
     </div>
   );
 }

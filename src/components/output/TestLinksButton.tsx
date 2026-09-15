@@ -1,4 +1,5 @@
 import { useBatchStore } from '../../store/batch';
+import { Button, Tooltip } from '@d3cloud/ui';
 
 const POPUP_THRESHOLD = 20;
 
@@ -19,14 +20,10 @@ export function TestLinksButton() {
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={rows.length === 0}
-      title="Opens each URL in a new tab. Browsers may block pop-ups."
-      className="rounded-md border border-[var(--color-border)] bg-[var(--color-elevated)] px-3 py-1.5 text-sm hover:bg-[var(--color-canvas)] disabled:cursor-not-allowed disabled:opacity-50"
-    >
-      Test all links
-    </button>
+    <Tooltip content="Opens each URL in a new tab. Browsers may block pop-ups.">
+      <Button onClick={handleClick} disabled={rows.length === 0}>
+        Test all links
+      </Button>
+    </Tooltip>
   );
 }

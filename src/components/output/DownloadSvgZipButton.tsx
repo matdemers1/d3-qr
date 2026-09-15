@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { saveAs } from 'file-saver';
+import { Alert, Button } from '@d3cloud/ui';
 import { useBatchStore } from '../../store/batch';
 import { generateQrSvg, optionsFromConfig } from '../../lib/qr';
 
@@ -46,16 +47,19 @@ export function DownloadSvgZipButton() {
     : `Download all SVGs (${rows.length})`;
 
   return (
-    <div className="flex flex-col gap-1">
-      <button
-        type="button"
+    <div className="flex flex-col gap-2">
+      <Button
         onClick={() => void handleClick()}
         disabled={rows.length === 0 || generating}
-        className="rounded-md border border-[var(--color-border)] bg-[var(--color-elevated)] px-3 py-1.5 text-sm hover:bg-[var(--color-canvas)] disabled:cursor-not-allowed disabled:opacity-50"
+        loading={generating}
       >
         {label}
-      </button>
-      {error && <p className="text-xs text-[var(--color-error)]">{error}</p>}
+      </Button>
+      {error && (
+        <Alert tone="danger" dynamic>
+          {error}
+        </Alert>
+      )}
     </div>
   );
 }

@@ -1,16 +1,22 @@
 import { useRef, useState, type DragEvent } from 'react';
 import { useBatchStore } from '../../store/batch';
-import type {
-  ErrorCorrection,
-  HeaderFooter,
-  PageSize,
-} from '../../types';
+import type { ErrorCorrection, HeaderFooter, PageSize } from '../../types';
+import { Alert, Button, Checkbox, FormField, Input, Select } from '@d3cloud/ui';
+import { DropZone } from '../ui/DropZone';
 
 const ECL_OPTIONS: { value: ErrorCorrection; label: string; help: string }[] = [
-  { value: 'L', label: 'Low (~7%)', help: 'Smallest QR, less damage tolerance' },
+  {
+    value: 'L',
+    label: 'Low (~7%)',
+    help: 'Smallest QR, less damage tolerance',
+  },
   { value: 'M', label: 'Medium (~15%)', help: 'Default. Good balance' },
   { value: 'Q', label: 'Quartile (~25%)', help: 'More tolerance, larger code' },
-  { value: 'H', label: 'High (~30%)', help: 'Most tolerance — required when a logo is embedded' },
+  {
+    value: 'H',
+    label: 'High (~30%)',
+    help: 'Most tolerance — required when a logo is embedded',
+  },
 ];
 
 const PAGE_OPTIONS: { value: PageSize; label: string }[] = [
@@ -23,7 +29,9 @@ const HF_ACCEPTED = ['image/png', 'image/jpeg'];
 function isAcceptedHfImage(file: File): boolean {
   if (file.type && HF_ACCEPTED.includes(file.type)) return true;
   const lower = file.name.toLowerCase();
-  return lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg');
+  return (
+    lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg')
+  );
 }
 
 function readDataUrl(file: File): Promise<string> {
@@ -62,7 +70,9 @@ function HeaderFooterField({ position, value, onChange }: HfFieldProps) {
     setError(null);
     if (!file) return;
     if (!isAcceptedHfImage(file)) {
-      setError('PNG or JPEG only. SVGs cannot be embedded directly into the PDF.');
+      setError(
+        'PNG or JPEG only. SVGs cannot be embedded directly into the PDF.',
+      );
       return;
     }
     try {
@@ -82,56 +92,52 @@ function HeaderFooterField({ position, value, onChange }: HfFieldProps) {
     event.preventDefault();
   }
 
+  const title = position === 'header' ? 'Header' : 'Footer';
+  const headingId = `d3qr-${position}-image`;
+
   return (
-    <div className="flex flex-col gap-2">
-      <label
-        htmlFor={`d3qr-${position}-text`}
-        className="text-sm font-medium capitalize"
-      >
-        {position}
-      </label>
-      <input
-        id={`d3qr-${position}-text`}
-        type="text"
-        autoComplete="off"
-        placeholder={`${position === 'header' ? 'Top' : 'Bottom'} text (optional)`}
-        value={value?.text ?? ''}
-        onChange={(e) => update({ text: e.target.value || undefined })}
-        className="rounded-md border border-[var(--color-border)] bg-[var(--color-canvas)] px-2.5 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
-      />
+    <fieldset className="flex flex-col gap-2">
+      <legend className="mb-1 text-sm font-medium">{title}</legend>
+      <FormField label="Text" optional>
+        <Input
+          type="text"
+          autoComplete="off"
+          value={value?.text ?? ''}
+          onChange={(e) => update({ text: e.target.value || undefined })}
+        />
+      </FormField>
+      <p id={headingId} className="sr-only">
+        {title} image
+      </p>
       {value?.image ? (
-        <div className="flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-canvas)] p-2">
+        <div className="flex items-center gap-2 rounded-md border border-border bg-bg p-2">
           <img
             src={value.image.dataUrl}
-            alt={`${position} image`}
-            className="h-9 w-9 rounded border border-[var(--color-border)] object-contain"
+            alt={`${title} image`}
+            className="h-9 w-9 rounded border border-border object-contain"
           />
-          <span className="flex-1 truncate text-xs">{value.image.filename}</span>
-          <button
-            type="button"
+          <span className="flex-1 truncate text-xs">
+            {value.image.filename}
+          </span>
+          <Button
+            size="sm"
+            variant="ghost"
             onClick={() => update({ image: undefined })}
-            className="rounded-sm px-2 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-error)]"
           >
             Remove
-          </button>
+          </Button>
         </div>
       ) : (
-        <div
+        <DropZone
+          size="sm"
+          active={false}
+          labelledBy={headingId}
+          onActivate={() => inputRef.current?.click()}
           onDrop={onDrop}
           onDragOver={onDragOver}
-          onClick={() => inputRef.current?.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              inputRef.current?.click();
-            }
-          }}
-          className="cursor-pointer rounded-md border border-dashed border-[var(--color-border)] bg-[var(--color-elevated)]/50 px-2.5 py-2 text-center text-xs text-[var(--color-text-muted)] hover:border-[var(--color-accent)]"
         >
           Drop or click to add a {position} image (PNG/JPEG)
-        </div>
+        </DropZone>
       )}
       <input
         ref={inputRef}
@@ -140,8 +146,12 @@ function HeaderFooterField({ position, value, onChange }: HfFieldProps) {
         className="hidden"
         onChange={(e) => void pickImage(e.target.files?.[0])}
       />
-      {error && <p className="text-xs text-[var(--color-error)]">{error}</p>}
-    </div>
+      {error && (
+        <Alert tone="danger" dynamic>
+          {error}
+        </Alert>
+      )}
+    </fieldset>
   );
 }
 
@@ -150,28 +160,24 @@ export function ConfigPanel() {
   const setConfig = useBatchStore((s) => s.setConfig);
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-elevated)] p-5">
-      <h2 className="text-sm font-semibold tracking-wide text-[var(--color-text-muted)] uppercase">
+    <section
+      aria-labelledby="d3qr-config-heading"
+      className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-5"
+    >
+      <h2
+        id="d3qr-config-heading"
+        className="text-sm font-semibold tracking-wide text-fg-muted uppercase"
+      >
         PDF config
       </h2>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="d3qr-page" className="text-sm font-medium">
-          Page size
-        </label>
-        <select
-          id="d3qr-page"
+      <FormField label="Page size">
+        <Select
           value={config.pageSize}
-          onChange={(e) => setConfig({ pageSize: e.target.value as PageSize })}
-          className="rounded-md border border-[var(--color-border)] bg-[var(--color-canvas)] px-2.5 py-1.5 text-sm outline-none focus:border-[var(--color-accent)]"
-        >
-          {PAGE_OPTIONS.map((p) => (
-            <option key={p.value} value={p.value}>
-              {p.label}
-            </option>
-          ))}
-        </select>
-      </div>
+          onValueChange={(v) => setConfig({ pageSize: v as PageSize })}
+          options={PAGE_OPTIONS}
+        />
+      </FormField>
 
       <HeaderFooterField
         position="header"
@@ -184,78 +190,60 @@ export function ConfigPanel() {
         onChange={(next) => setConfig({ footer: next })}
       />
 
-      <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium">Toggles</label>
-        <label className="flex cursor-pointer items-center gap-2 text-sm">
-          <input
-            type="checkbox"
+      <FormField label="On each page" as="group">
+        <div className="flex flex-col gap-2">
+          <Checkbox
             checked={config.showPageNumbers}
-            onChange={(e) => setConfig({ showPageNumbers: e.target.checked })}
+            onCheckedChange={(c) => setConfig({ showPageNumbers: c === true })}
+            label="Page numbers"
           />
-          Page numbers
-        </label>
-        <label className="flex cursor-pointer items-center gap-2 text-sm">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={config.showUrlBelowQr}
-            onChange={(e) => setConfig({ showUrlBelowQr: e.target.checked })}
+            onCheckedChange={(c) => setConfig({ showUrlBelowQr: c === true })}
+            label="Show URL below QR"
           />
-          Show URL below QR
-        </label>
-      </div>
+        </div>
+      </FormField>
 
       <div className="flex gap-3">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="d3qr-fg" className="text-sm font-medium">
-            Foreground
-          </label>
+        {/* Native colour pickers: the system has no colour input, and the
+            browser's own is the accessible one. */}
+        <FormField label="Foreground">
           <input
-            id="d3qr-fg"
             type="color"
             value={config.fgColor}
             onChange={(e) => setConfig({ fgColor: e.target.value })}
-            className="h-9 w-14 cursor-pointer rounded-md border border-[var(--color-border)] bg-[var(--color-canvas)]"
+            className="h-9 w-14 cursor-pointer rounded-md border border-border-field bg-bg"
           />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="d3qr-bg" className="text-sm font-medium">
-            Background
-          </label>
+        </FormField>
+        <FormField label="Background">
           <input
-            id="d3qr-bg"
             type="color"
             value={config.bgColor}
             onChange={(e) => setConfig({ bgColor: e.target.value })}
-            className="h-9 w-14 cursor-pointer rounded-md border border-[var(--color-border)] bg-[var(--color-canvas)]"
+            className="h-9 w-14 cursor-pointer rounded-md border border-border-field bg-bg"
           />
-        </div>
+        </FormField>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="d3qr-ecl" className="text-sm font-medium">
-          Error correction
-        </label>
-        <select
-          id="d3qr-ecl"
+      <FormField
+        label="Error correction"
+        help={
+          config.logo
+            ? 'Forced to High while a logo is embedded.'
+            : (ECL_OPTIONS.find((o) => o.value === config.errorCorrection)
+                ?.help ?? '')
+        }
+      >
+        <Select
           value={config.errorCorrection}
-          onChange={(e) =>
-            setConfig({ errorCorrection: e.target.value as ErrorCorrection })
+          onValueChange={(v) =>
+            setConfig({ errorCorrection: v as ErrorCorrection })
           }
           disabled={!!config.logo}
-          className="rounded-md border border-[var(--color-border)] bg-[var(--color-canvas)] px-2.5 py-1.5 text-sm outline-none focus:border-[var(--color-accent)] disabled:opacity-60"
-        >
-          {ECL_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-        <p className="text-xs text-[var(--color-text-muted)]">
-          {config.logo
-            ? 'Forced to High while a logo is embedded.'
-            : (ECL_OPTIONS.find((o) => o.value === config.errorCorrection)?.help ?? '')}
-        </p>
-      </div>
-    </div>
+          options={ECL_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+        />
+      </FormField>
+    </section>
   );
 }

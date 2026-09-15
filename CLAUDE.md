@@ -56,7 +56,8 @@ User loads the page once from Cloudflare Workers (Static Assets binding). Everyt
 ## Stack
 
 - React 19 + Vite 7 + TypeScript
-- Tailwind CSS v4 (class-based dark mode)
+- `@d3cloud/ui` (D3 design system, pinned release tarball) on Tailwind CSS v4 — theme is `data-theme` on `<html>`, set before paint by `public/theme-init.js` (a file, because CSP forbids inline scripts); no attribute follows the OS
+- `npm run lint` includes `d3-check-usage src`: no raw hex, palette classes or shadows in UI code; print colours carry a `d3-allow:` reason
 - Zustand for state
 - `qrcode` for QR generation
 - `pdf-lib` for PDF assembly

@@ -8,8 +8,8 @@ const DEFAULT_CONFIG: Config = {
   errorCorrection: 'M',
   showPageNumbers: true,
   showUrlBelowQr: true,
-  fgColor: '#000000',
-  bgColor: '#ffffff',
+  fgColor: '#000000', // d3-allow: the QR code's printed ink colour, user data
+  bgColor: '#ffffff', // d3-allow: the QR code's printed paper colour, user data
 };
 
 interface BatchState {

@@ -8,24 +8,18 @@
       name="description"
       content="Free, privacy-first static QR code generator. Bulk PDF and image export. Your URLs never leave your browser."
     />
-    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#101117"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#f0f2f7"
+    />
     <title>D3 QR — Static QR code generator</title>
-    <script>
-      // Apply theme before paint to prevent flash
-      (function () {
-        try {
-          var stored = localStorage.getItem('d3qr-theme');
-          var prefersDark = window.matchMedia(
-            '(prefers-color-scheme: dark)',
-          ).matches;
-          var resolved =
-            stored === 'dark' ||
-            (stored === 'light' ? false : prefersDark) ||
-            (!stored && prefersDark);
-          if (resolved) document.documentElement.classList.add('dark');
-        } catch (_) {}
-      })();
-    </script>
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>
